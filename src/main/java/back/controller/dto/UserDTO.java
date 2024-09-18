@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class UserDto {
+public class UserDTO {
     private String email;
     private String password;
     private final List<String> roles;

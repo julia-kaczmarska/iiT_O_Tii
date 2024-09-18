@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository public interface SharingRepository extends JpaRepository<Sharing, Long>{
 
-//    Optional<Sharing> findByCashflowRecordId(Long cashflowRecordId);
+    //    Optional<Sharing> findByCashflowRecordId(Long cashflowRecordId);
     Optional<Sharing> findByCashflowRecord_CashflowRecordId(Long cashflowRecordId);
 
 

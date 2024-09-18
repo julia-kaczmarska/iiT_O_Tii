@@ -1,6 +1,6 @@
 package back.controller;
 
-import back.controller.dto.UserDto;
+import back.controller.dto.UserDTO;
 import back.model.Token;
 import back.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth/login")
-    public Token login(@RequestBody @Validated UserDto userDto){
-        return authService.attemptLogin(userDto.getEmail(),userDto.getPassword());
+    public Token login(@RequestBody @Validated UserDTO userDTO){
+        return authService.attemptLogin(userDTO.getEmail(),userDTO.getPassword());
     }
 }

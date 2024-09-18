@@ -1,6 +1,6 @@
 security:
   jwt:
-    secret-key: verysecretkeyohmygodwhyisitsosecretdonttellanybody
+    secret-key: kochammackastickyplackaicalamojarodzinkeee
 
 spring:
   application:

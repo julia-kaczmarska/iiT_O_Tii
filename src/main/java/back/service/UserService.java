@@ -1,12 +1,10 @@
 package back.service;
 
-import back.model.Category;
 import back.model.User;
 import back.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
