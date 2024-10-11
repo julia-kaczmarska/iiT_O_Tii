@@ -14,11 +14,12 @@ import java.time.temporal.ChronoUnit;
 public class JwtIssuer {
     private final JwtProperties properties;
 
-    public String issue(long userId, String email, String role){
+    public String issue(long userId, String email, String name, String role){
         return JWT.create()
                 .withSubject(String.valueOf(userId))
                 .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.DAYS)))
                 .withClaim("email", email)
+                .withClaim("name", name)
                 .withClaim("role", role)
                 .sign(Algorithm.HMAC256(properties.getSecretKey()));
     }

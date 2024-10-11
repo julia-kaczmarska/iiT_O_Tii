@@ -5,6 +5,7 @@ import back.model.Token;
 import back.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,10 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping("/auth/loginn")
+    @PostMapping("/auth/login")
     public Token login(@RequestBody @Validated UserDTO userDTO){
         return authService.attemptLogin(userDTO.getEmail(),userDTO.getPassword());
     }

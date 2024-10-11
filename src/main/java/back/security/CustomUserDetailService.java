@@ -1,26 +1,37 @@
 package back.security;
 
-import back.service.UserService;
+import back.model.User;
+import back.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import java.util.List;
+
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
-    private final UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = userService.findByEmail(username).orElseThrow();
-        return UserPrincipal.builder()
-                .userId(user.getUserId())
-                .email(user.getEmail())
-                .authorities(List.of(new SimpleGrantedAuthority(user.getRole())))
-                .password(user.getPassword())
-                .build();
+        Optional<User> userDetail = userRepository.findByEmail(username);
+
+        return userDetail.map(user -> new UserPrincipal(
+                user.getUserId(),
+                user.getEmail(),
+                user.getName(),
+                user.getPassword(),
+                user.getRole().stream()
+                        .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                        .collect(Collectors.toList())
+        )).orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
     }
 }

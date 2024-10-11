@@ -28,7 +28,7 @@ public class AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        var token = jwtIssuer.issue(principal.getUserId(), principal.getEmail(), roles.toString());
+        var token = jwtIssuer.issue(principal.getUserId(), principal.getEmail(), principal.getName(), roles.toString());
         return Token
                 .accessToken(token)
                 .build();

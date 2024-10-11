@@ -1,7 +1,8 @@
 package back.model;
 
-import lombok.*;
-import org.springframework.web.bind.annotation.RequestBody;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
