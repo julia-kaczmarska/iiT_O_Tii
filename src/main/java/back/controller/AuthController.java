@@ -4,6 +4,7 @@ import back.controller.dto.UserDTO;
 import back.model.Token;
 import back.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,4 +22,13 @@ public class AuthController {
     public Token login(@RequestBody @Validated UserDTO userDTO){
         return authService.attemptLogin(userDTO.getEmail(),userDTO.getPassword());
     }
+
+
+    @PostMapping("/auth/register")
+    public ResponseEntity<Token> register(@RequestBody @Validated UserDTO userDTO) {
+        // Użycie serwisu do rejestracji nowego użytkownika
+        Token token = authService.registerUser(userDTO);
+        return ResponseEntity.ok(token);
+    }
+
 }
