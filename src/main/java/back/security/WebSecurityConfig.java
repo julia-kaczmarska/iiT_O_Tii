@@ -3,6 +3,7 @@ package back.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +17,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -28,9 +32,9 @@ public class WebSecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000"); // Zmień na adres swojego frontendowego serwera
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); //options - przeglądarka wysyła żądania preflight używając OPTIONS
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
@@ -59,19 +63,17 @@ public class WebSecurityConfig {
 //        return http.build();
 
         http
-                .cors().disable()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .formLogin().disable()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(registry -> registry
-                        .requestMatchers("/auth/**").permitAll() // Permit all auth-related endpoints
-//                        .anyRequest().authenticated() // Require authentication for all other endpoints
-                                .anyRequest().permitAll() // Permit all auth-related endpoints
-
-                );
-
+            .cors().and() // Włącz CORS
+            .csrf().disable() // Wyłącz CSRF
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Bezstanowe sesje
+            .and()
+            .formLogin().disable() // Wyłącz logowanie
+            .authorizeHttpRequests(registry -> registry
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Pozwól na wszystkie zapytania OPTIONS (preflight)
+                    .requestMatchers("/auth/**").permitAll() // Zezwól na dostęp do endpointów autoryzacji
+                    .anyRequest().authenticated() // Wymagaj autoryzacji dla pozostałych żądań
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
