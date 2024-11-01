@@ -14,15 +14,19 @@ public class CategoryDTO {
     @NotNull(message = "Title cannot be null")
     private String title;
 
+    @NotNull(message = "Color cannot be null")
+    private String color;
+
 
     public CategoryDTO(Category category) {
 //        this.categoryId = category.getCategoryId();
         this.title = category.getTitle();
     }
 
-    public CategoryDTO(Long categoryId, String title) {
+    public CategoryDTO(Long categoryId, String title, String color) {
         this.categoryId = categoryId;
         this.title = title;
+        this.color = color;
     }
 
     public CategoryDTO(String title) {

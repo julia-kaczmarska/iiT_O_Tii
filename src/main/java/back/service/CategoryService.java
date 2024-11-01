@@ -32,19 +32,28 @@ public class CategoryService {
         Category category = new Category();
         category.setCategoryId(categoryDTO.getCategoryId());
         category.setTitle(categoryDTO.getTitle());
+        category.setColor(categoryDTO.getColor());
         category.setUser(user);
 
         Category savedCategory = categoryRepository.save(category);
-        return new CategoryDTO(savedCategory.getCategoryId(), savedCategory.getTitle());
-//        return new CategoryDTO(savedCategory.getTitle());
+        return new CategoryDTO(savedCategory.getCategoryId(), savedCategory.getTitle(), savedCategory.getColor());
     }
-    public CategoryDTO updateCategory(Long userId, Long categoryId, CategoryDTO categoryDTO) {
+    public CategoryDTO updateCategoryTitle(Long userId, Long categoryId, String title) {
         Category category = categoryRepository.findByCategoryIdAndUserId(categoryId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found for this user"));
 
-        category.setTitle(categoryDTO.getTitle());
+        category.setTitle(title);
         Category updatedCategory = categoryRepository.save(category);
-        return new CategoryDTO(updatedCategory.getCategoryId(), updatedCategory.getTitle());
+        return new CategoryDTO(updatedCategory.getCategoryId(), updatedCategory.getTitle(), updatedCategory.getColor());
+    }
+
+    public CategoryDTO updateCategoryColor(Long userId, Long categoryId, String color) {
+        Category category = categoryRepository.findByCategoryIdAndUserId(categoryId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found for this user"));
+
+        category.setColor(color);
+        Category updatedCategory = categoryRepository.save(category);
+        return new CategoryDTO(updatedCategory.getCategoryId(), updatedCategory.getTitle(), updatedCategory.getColor());
     }
 
     public void deleteCategory(Long userId, Long categoryId) {

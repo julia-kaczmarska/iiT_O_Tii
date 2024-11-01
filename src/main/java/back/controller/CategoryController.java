@@ -8,16 +8,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000") // Pozwala na żądania z Twojej aplikacji React
+@CrossOrigin(origins = "http://localhost:3000") // Pozwala na żądania z frontu
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping("/user/{userId}/cats")
+    @GetMapping("/user/{userId}/categories")
     public ResponseEntity<Object> getCategoriesByUserId(@PathVariable Long userId) {
         try {
             List<CategoryDTO> categories = categoryService.getCategoriesByUserId(userId);
@@ -27,7 +28,7 @@ public class CategoryController {
         }
     }
 
-    @PostMapping("/user/{userId}/addcat")
+    @PostMapping("/user/{userId}/addcategory")
     public ResponseEntity<Object> addCategory(@RequestBody CategoryDTO categoryDto, @PathVariable Long userId) {
         try {
             CategoryDTO savedCategory = categoryService.addCategory(categoryDto, userId);
@@ -36,16 +37,28 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    @PutMapping("/user/{userId}/cats/{categoryId}")
-    public ResponseEntity<CategoryDTO> updateCategory(
+
+    @PutMapping("/user/{userId}/category/{categoryId}/color")
+    public ResponseEntity<CategoryDTO> updateCategoryColor(
             @PathVariable Long userId,
             @PathVariable Long categoryId,
-            @RequestBody CategoryDTO categoryDTO) {
-        CategoryDTO updatedCategory = categoryService.updateCategory(userId, categoryId, categoryDTO);
+            @RequestBody Map<String, String> requestBody) {
+        String color = requestBody.get("color");
+        CategoryDTO updatedCategory = categoryService.updateCategoryColor(userId, categoryId, color);
         return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/{userId}/cats/{categoryId}")
+    @PutMapping("/user/{userId}/category/{categoryId}/title")
+    public ResponseEntity<CategoryDTO> updateCategoryTitle(
+            @PathVariable Long userId,
+            @PathVariable Long categoryId,
+            @RequestBody Map<String, String> requestBody) {
+        String title = requestBody.get("title");
+        CategoryDTO updatedCategory = categoryService.updateCategoryTitle(userId, categoryId, title);
+        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user/{userId}/category/{categoryId}")
     public ResponseEntity<Void> deleteCategory(
             @PathVariable Long userId,
             @PathVariable Long categoryId) {

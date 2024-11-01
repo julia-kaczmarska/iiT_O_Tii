@@ -21,6 +21,9 @@ public class Category {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "color", nullable = false)
+    private String color;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

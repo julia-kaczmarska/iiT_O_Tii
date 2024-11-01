@@ -12,15 +12,14 @@ import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    @Query("SELECT new back.controller.dto.CategoryDTO(c.categoryId, c.title) " +
+    @Query("SELECT new back.controller.dto.CategoryDTO(c.categoryId, c.title, c.color) " +
             "FROM Category c " +
             "WHERE c.user.userId = :userId")
-    List<CategoryDTO> findByUserId(@Param("userId") Long userId);
+    List<CategoryDTO> findByUserId(@Param("userId") Long userId); //GET
 
 
-    @Query("SELECT new back.controller.dto.CategoryDTO(c.categoryId, c.title) " +
-            "FROM Category c " +
+    @Query("SELECT c FROM Category c " +
             "WHERE c.categoryId = :categoryId AND c.user.userId = :userId")
-    Optional<Category> findByCategoryIdAndUserId(Long categoryId, Long userId);
+    Optional<Category> findByCategoryIdAndUserId(@Param("categoryId") Long categoryId, @Param("userId") Long userId); //UPDATE AND DELETE
 
 }
