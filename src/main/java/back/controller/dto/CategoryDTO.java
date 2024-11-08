@@ -29,6 +29,11 @@ public class CategoryDTO {
         this.color = color;
     }
 
+    //ADD cashflowRecord
+    public CategoryDTO(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public CategoryDTO(String title) {
         this.title = title;
     }

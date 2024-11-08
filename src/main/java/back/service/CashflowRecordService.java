@@ -31,49 +31,39 @@ public class CashflowRecordService {
     }
 
     public CashflowRecordDTO addCashflowRecord(CashflowRecordDTO cashflowRecordDTO, Long userId) {
-//        // Sprawdzenie, czy userId nie jest null
-//        if (userId == null) {
-//            throw new IllegalArgumentException("User ID must not be null");
-//        }
 
-        // Pobranie użytkownika
-        User user = userRepository.findById(Math.toIntExact(userId))
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
         // Sprawdzenie warunków na podstawie recordType
-        if (cashflowRecordDTO.isRecordType() && cashflowRecordDTO.getCategoryId() == null) {
+        if (cashflowRecordDTO.getRecordType() && cashflowRecordDTO.getCategoryId() == null) {
             throw new IllegalArgumentException("Category ID must not be null when recordType is true");
         }
 
-        if (!cashflowRecordDTO.isRecordType() && cashflowRecordDTO.getCategoryId() != null) {
+        if (!cashflowRecordDTO.getRecordType() && cashflowRecordDTO.getCategoryId() != null) {
             throw new IllegalArgumentException("Category ID must be null when recordType is false");
         }
 
         // Pobranie kategorii, jeśli categoryId jest podane
         Category category = null;
         if (cashflowRecordDTO.getCategoryId() != null) {
-            category = categoryRepository.findById(cashflowRecordDTO.getCategoryId())
+            category = categoryRepository.findByCategoryIdAndUserId(cashflowRecordDTO.getCategoryId(), userId)
                     .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + cashflowRecordDTO.getCategoryId()));
         }
 
-        // Tworzenie nowego CashflowRecord
+
         CashflowRecord cashflowRecord = new CashflowRecord();
         cashflowRecord.setAmount(cashflowRecordDTO.getAmount());
         cashflowRecord.setDate(cashflowRecordDTO.getDate());
-        cashflowRecord.setRecordType(cashflowRecordDTO.isRecordType());
+        cashflowRecord.setRecordType(cashflowRecordDTO.getRecordType());
+        cashflowRecord.setTitle(cashflowRecordDTO.getTitle());
         cashflowRecord.setCategory(category);
+        cashflowRecord.setUser(user);
 
-        // Zapis rekordu
         CashflowRecord savedCashflowRecord = cashflowRecordRepository.save(cashflowRecord);
 
-        // Tworzenie i zapisywanie rekordu Sharing
-        Sharing sharing = new Sharing();
-        sharing.setCashflowRecord(savedCashflowRecord);
-        sharing.setUser(user);
-        sharingRepository.save(sharing);
-
         // Zwrot DTO z zapisanego rekordu
-        return new CashflowRecordDTO(savedCashflowRecord.getAmount(), savedCashflowRecord.getDate(), savedCashflowRecord.isRecordType(),
+        return new CashflowRecordDTO(savedCashflowRecord.getAmount(), savedCashflowRecord.getDate(), savedCashflowRecord.isRecordType(), savedCashflowRecord.getTitle(),
                 savedCashflowRecord.getCategory() != null ? savedCashflowRecord.getCategory().getCategoryId() : null, userId);
     }
 
@@ -97,7 +87,7 @@ public class CashflowRecordService {
         // Zaktualizuj pola rekordu
         existingRecord.setAmount(newRecordData.getAmount());
         existingRecord.setDate(newRecordData.getDate());
-        existingRecord.setRecordType(newRecordData.isRecordType());
+        existingRecord.setRecordType(newRecordData.getRecordType());
         existingRecord.setCategory(category);
 
         // Zapisz zaktualizowany rekord
@@ -114,7 +104,6 @@ public class CashflowRecordService {
                 updatedRecord.getDate(),
                 updatedRecord.isRecordType(),
                 updatedRecord.getCategory().getCategoryId(),
-                updatedRecord.getCategory().getTitle(),
                 userId
         );
     }

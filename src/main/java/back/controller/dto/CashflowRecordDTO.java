@@ -11,19 +11,18 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class CashflowRecordDTO {
-    @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount must be positive")
-    private float amount;
+    private Float amount;
 
     @NotNull(message = "Date cannot be null")
     private LocalDate date;
 
     @NotNull(message = "Record type cannot be null")
-    private boolean recordType;
+    private Boolean recordType;
+    @NotNull(message = "Record type cannot be null")
+    private String title;
 
     private Long categoryId;
-    private String categoryTitle;
-
     private Long userId;
 
     // Domyślny konstruktor potrzebny dla Jacksona
@@ -31,21 +30,21 @@ public class CashflowRecordDTO {
     }
 
     // Konstruktor używany przy tworzeniu rekordu
-    public CashflowRecordDTO(float amount, LocalDate date, boolean recordType, Long categoryId, Long userId) {
+    public CashflowRecordDTO(Float amount, LocalDate date, Boolean recordType, String title, Long categoryId, Long userId) {
         this.amount = amount;
         this.date = date;
         this.recordType = recordType;
+        this.title = title;
         this.categoryId = categoryId;
         this.userId = userId;
     }
 
     //dla zapytań
-    public CashflowRecordDTO(float amount, LocalDate date, boolean recordType, Long categoryId, String categoryTitle, Long userId) {
+    public CashflowRecordDTO(Float amount, LocalDate date, Boolean recordType, Long categoryId, Long userId) {
         this.amount = amount;
         this.date = date;
         this.recordType = recordType;
         this.categoryId = categoryId;
-        this.categoryTitle = categoryTitle;
         this.userId = userId;
     }
 }

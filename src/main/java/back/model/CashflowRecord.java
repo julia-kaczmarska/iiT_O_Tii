@@ -1,11 +1,10 @@
 package back.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "cashflow_record")
@@ -27,11 +26,18 @@ public class CashflowRecord {
     @Column(name = "record_type", nullable = false)
     private boolean recordType;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "cashflowRecord", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Sharing> sharings = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+//    @OneToMany(mappedBy = "cashflowRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Sharing> sharings = new ArrayList<>();
 }
 

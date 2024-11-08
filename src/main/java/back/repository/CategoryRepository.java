@@ -17,6 +17,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "WHERE c.user.userId = :userId")
     List<CategoryDTO> findByUserId(@Param("userId") Long userId); //GET
 
+    @Query("SELECT new back.controller.dto.CategoryDTO(c.categoryId) " +
+            "FROM Category c " +
+            "WHERE c.user.userId = :userId")
+    Optional<Category> getThisUsersCat(@Param("userId") Long userId); //ADD cashflowRecord
 
     @Query("SELECT c FROM Category c " +
             "WHERE c.categoryId = :categoryId AND c.user.userId = :userId")
