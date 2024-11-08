@@ -51,7 +51,6 @@ public class CashflowRecordService {
                     .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + cashflowRecordDTO.getCategoryId()));
         }
 
-
         CashflowRecord cashflowRecord = new CashflowRecord();
         cashflowRecord.setAmount(cashflowRecordDTO.getAmount());
         cashflowRecord.setDate(cashflowRecordDTO.getDate());
