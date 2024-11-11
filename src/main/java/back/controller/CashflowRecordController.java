@@ -29,7 +29,6 @@ public class CashflowRecordController {
 
     @PostMapping("/user/{userId}/addrecords")
     public ResponseEntity<Object> addCashflowRecord(@Valid @RequestBody CashflowRecordDTO cashflowRecordDTO, @PathVariable Long userId) {
-        System.out.println(userId);
         try{
             CashflowRecordDTO savedCashflowRecord = cashflowRecordService.addCashflowRecord(cashflowRecordDTO, userId);
 

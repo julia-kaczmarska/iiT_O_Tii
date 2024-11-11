@@ -14,13 +14,13 @@ public class CashflowRecordDTO {
     @Positive(message = "Amount must be positive")
     private Float amount;
 
-    @NotNull(message = "Date cannot be null")
-    private LocalDate date;
+    @NotNull(message = "Start date cannot be null")
+    private LocalDate startDate;
 
     @NotNull(message = "Record type cannot be null")
     private Boolean recordType;
-    @NotNull(message = "Record type cannot be null")
-    private String title;
+    @NotNull(message = "Record description cannot be null")
+    private String desc;
 
     private Long categoryId;
     private Long userId;
@@ -30,21 +30,25 @@ public class CashflowRecordDTO {
     }
 
     // Konstruktor używany przy tworzeniu rekordu
-    public CashflowRecordDTO(Float amount, LocalDate date, Boolean recordType, String title, Long categoryId, Long userId) {
+    public CashflowRecordDTO(Float amount, LocalDate startDate, Boolean recordType, String desc, Long categoryId, Long userId) {
         this.amount = amount;
-        this.date = date;
+        this.startDate = startDate;
+
+
         this.recordType = recordType;
-        this.title = title;
+        this.desc = desc;
         this.categoryId = categoryId;
         this.userId = userId;
     }
 
     //dla zapytań
-    public CashflowRecordDTO(Float amount, LocalDate date, Boolean recordType, Long categoryId, Long userId) {
-        this.amount = amount;
-        this.date = date;
-        this.recordType = recordType;
-        this.categoryId = categoryId;
-        this.userId = userId;
-    }
+//    public CashflowRecordDTO(Float amount, LocalDate startDate, LocalDate endDate, Boolean recordType, Long categoryId, Long userId) {
+//        this.amount = amount;
+//        this.startDate = startDate;
+//        this.endDate = endDate;
+//
+//        this.recordType = recordType;
+//        this.categoryId = categoryId;
+//        this.userId = userId;
+//    }
 }

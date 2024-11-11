@@ -20,14 +20,14 @@ public class CashflowRecord {
     @Column(name = "amount", nullable = false)
     private float amount;
 
-    @Column(name = "date", nullable = false)
-    private LocalDate date;
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
     @Column(name = "record_type", nullable = false)
     private boolean recordType;
 
-    @Column(name = "title", nullable = false)
-    private String title;
+    @Column(name = "description", nullable = false)
+    private String desc;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")

@@ -53,16 +53,16 @@ public class CashflowRecordService {
 
         CashflowRecord cashflowRecord = new CashflowRecord();
         cashflowRecord.setAmount(cashflowRecordDTO.getAmount());
-        cashflowRecord.setDate(cashflowRecordDTO.getDate());
+        cashflowRecord.setStartDate(cashflowRecordDTO.getStartDate());
         cashflowRecord.setRecordType(cashflowRecordDTO.getRecordType());
-        cashflowRecord.setTitle(cashflowRecordDTO.getTitle());
+        cashflowRecord.setDesc(cashflowRecordDTO.getDesc());
         cashflowRecord.setCategory(category);
         cashflowRecord.setUser(user);
 
         CashflowRecord savedCashflowRecord = cashflowRecordRepository.save(cashflowRecord);
 
         // Zwrot DTO z zapisanego rekordu
-        return new CashflowRecordDTO(savedCashflowRecord.getAmount(), savedCashflowRecord.getDate(), savedCashflowRecord.isRecordType(), savedCashflowRecord.getTitle(),
+        return new CashflowRecordDTO(savedCashflowRecord.getAmount(), savedCashflowRecord.getStartDate(), savedCashflowRecord.isRecordType(), savedCashflowRecord.getDesc(),
                 savedCashflowRecord.getCategory() != null ? savedCashflowRecord.getCategory().getCategoryId() : null, userId);
     }
 
@@ -85,7 +85,7 @@ public class CashflowRecordService {
 
         // Zaktualizuj pola rekordu
         existingRecord.setAmount(newRecordData.getAmount());
-        existingRecord.setDate(newRecordData.getDate());
+        existingRecord.setStartDate(newRecordData.getStartDate());
         existingRecord.setRecordType(newRecordData.getRecordType());
         existingRecord.setCategory(category);
 
@@ -100,8 +100,9 @@ public class CashflowRecordService {
 
         return new CashflowRecordDTO(
                 updatedRecord.getAmount(),
-                updatedRecord.getDate(),
+                updatedRecord.getStartDate(),
                 updatedRecord.isRecordType(),
+                updatedRecord.getDesc(),
                 updatedRecord.getCategory().getCategoryId(),
                 userId
         );
