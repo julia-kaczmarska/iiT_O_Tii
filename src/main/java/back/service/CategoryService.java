@@ -6,6 +6,7 @@ import back.model.User;
 import back.repository.CategoryRepository;
 import back.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class CategoryService {
     }
     public CategoryDTO updateCategoryTitle(Long userId, Long categoryId, String title) {
         Category category = categoryRepository.findByCategoryIdAndUserId(categoryId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("Category not found for this user"));
+                .orElseThrow(() -> new IllegalArgumentException("Category with id: "+categoryId+" not found for this user"));
 
         category.setTitle(title);
         Category updatedCategory = categoryRepository.save(category);
@@ -49,7 +50,7 @@ public class CategoryService {
 
     public CategoryDTO updateCategoryColor(Long userId, Long categoryId, String color) {
         Category category = categoryRepository.findByCategoryIdAndUserId(categoryId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("Category not found for this user"));
+                .orElseThrow(() -> new IllegalArgumentException("Category with id: "+categoryId+" not found for this user"));
 
         category.setColor(color);
         Category updatedCategory = categoryRepository.save(category);
@@ -58,7 +59,12 @@ public class CategoryService {
 
     public void deleteCategory(Long userId, Long categoryId) {
         Category category = categoryRepository.findByCategoryIdAndUserId(categoryId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("Category not found for this user"));
+                .orElseThrow(() -> new IllegalArgumentException("Category with id: "+categoryId+" not found for this user"));
+
+        if (!category.getUser().getUserId().equals(userId)) {
+            throw new AccessDeniedException("You do not own this category");
+        }
+
         categoryRepository.delete(category);
     }
 }

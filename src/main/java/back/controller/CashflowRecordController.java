@@ -38,19 +38,20 @@ public class CashflowRecordController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-//    @PutMapping("/user/{userId}/records/{recordId}")
-//    public ResponseEntity<CashflowRecordDTO> updateCashflowRecord(
-//            @PathVariable Long recordId,
-//            @RequestBody CashflowRecordDTO cashflowRecordDTO) {
-//        CashflowRecordDTO updatedRecord = cashflowRecordService.updateCashflowRecord(recordId, cashflowRecordDTO);
-//        return new ResponseEntity<>(updatedRecord, HttpStatus.OK);
-//    }
-//
-////    @DeleteMapping("/user/{userId}/records/{recordId}")
-////    public ResponseEntity<Void> deleteCashflowRecord(
-////            @PathVariable Long userId,
-////            @PathVariable Long recordId) {
-////        cashflowRecordService.deleteCashflowRecord(userId, recordId);
-////        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-////    }
+    @PutMapping("/user/{userId}/records/{recordId}")
+    public ResponseEntity<CashflowRecordDTO> updateCashflowRecord(
+            @PathVariable Long userId,
+            @PathVariable Long recordId,
+            @RequestBody CashflowRecordDTO cashflowRecordDTO) {
+        CashflowRecordDTO updatedRecord = cashflowRecordService.updateCashflowRecord(userId, recordId, cashflowRecordDTO);
+        return new ResponseEntity<>(updatedRecord, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user/{userId}/records/{recordId}")
+    public ResponseEntity<Void> deleteCashflowRecord(
+            @PathVariable Long userId,
+            @PathVariable Long recordId) {
+        cashflowRecordService.deleteCashflowRecord(userId, recordId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

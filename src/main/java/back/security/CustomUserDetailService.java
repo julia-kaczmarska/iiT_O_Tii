@@ -30,7 +30,7 @@ public class CustomUserDetailService implements UserDetailsService {
                 user.getName(),
                 user.getPassword(),
                 user.getRole().stream()
-                        .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                        .map(role -> new SimpleGrantedAuthority(role.getRoleTitle()))
                         .collect(Collectors.toList())
         )).orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
     }

@@ -24,6 +24,10 @@ public class UserPrincipal implements UserDetails {
         return authorities;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
     @Override
     public String getPassword() {
         return password;

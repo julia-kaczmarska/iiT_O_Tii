@@ -8,10 +8,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CashflowRecordRepository extends JpaRepository<CashflowRecord, Long> {
 
+    // GET records
     @Query("SELECT new back.controller.dto.CashflowRecordDTO(r.amount, r.startDate, r.recordType, r.desc, c.categoryId, u.userId) " +
             "FROM CashflowRecord r " +
             "JOIN r.category c " +
@@ -20,13 +22,12 @@ public interface CashflowRecordRepository extends JpaRepository<CashflowRecord, 
     List<CashflowRecordDTO> findRecordsByUserId(@Param("userId") Long userId);
 
 
-//    @Query("SELECT new back.controller.dto.CashflowRecordDTO(r.amount, r.date, r.recordType, c.categoryId, c.title, u.userId) " +
-//            "FROM CashflowRecord r " +
-//            "JOIN r.category c " +
-//            "JOIN Sharing s ON s.cashflowRecord.cashflowRecordId = r.cashflowRecordId " +
-//            "JOIN s.user u " +
-//            "WHERE r.cashflowRecordId = :cashflowRecordId AND u.userId = :userId")
-//    Optional<CashflowRecordDTO> findByCashflowRecordIdAndUserId(@Param("cashflowRecordId") Long cashflowRecordId, @Param("userId") Long userId);
+    // DELETE record
+    @Query("SELECT r " +
+            "FROM CashflowRecord r " +
+            "JOIN r.category c " +
+            "WHERE r.cashflowRecordId = :cashflowRecordId AND r.user.userId = :userId")
+    Optional<CashflowRecord> findByCashflowRecordIdAndUserId(@Param("userId") Long userId, @Param("cashflowRecordId") Long cashflowRecordId);
 
 }
 

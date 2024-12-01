@@ -34,7 +34,6 @@ public class CashflowRecordDTO {
         this.amount = amount;
         this.startDate = startDate;
 
-
         this.recordType = recordType;
         this.desc = desc;
         this.categoryId = categoryId;
@@ -42,13 +41,12 @@ public class CashflowRecordDTO {
     }
 
     //dla zapytań
-//    public CashflowRecordDTO(Float amount, LocalDate startDate, LocalDate endDate, Boolean recordType, Long categoryId, Long userId) {
-//        this.amount = amount;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//
-//        this.recordType = recordType;
-//        this.categoryId = categoryId;
-//        this.userId = userId;
-//    }
+    public CashflowRecordDTO(Float amount, LocalDate startDate, Boolean recordType, Long categoryId, Long userId) {
+        this.amount = amount;
+        this.startDate = startDate;
+
+        this.recordType = recordType;
+        this.categoryId = categoryId;
+        this.userId = userId;
+    }
 }

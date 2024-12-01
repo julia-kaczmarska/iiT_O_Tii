@@ -1,10 +1,12 @@
 package back.controller;
 
 import back.controller.dto.CategoryDTO;
+import back.security.UserPrincipal;
 import back.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,10 +61,12 @@ public class CategoryController {
     }
 
     @DeleteMapping("/user/{userId}/category/{categoryId}")
-    public ResponseEntity<Void> deleteCategory(
-            @PathVariable Long userId,
-            @PathVariable Long categoryId) {
+    public String deleteCategory(@PathVariable Long userId, @PathVariable Long categoryId) {
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!principal.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("You do not have permission to delete this category");
+        }
         categoryService.deleteCategory(userId, categoryId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return String.valueOf(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 }
