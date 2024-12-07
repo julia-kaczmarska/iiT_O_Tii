@@ -1,5 +1,6 @@
 package back.security;
 
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -18,13 +19,22 @@ public class JwtToPrincipalConverter {
     }
 
     private List<SimpleGrantedAuthority> extractAuthoritiesFromClaim(DecodedJWT jwt){
-//        var claim = jwt.getClaim("role");
-//        if (claim.isNull() || claim.isMissing()) {
-//            return List.of();
-//        }
-//        return claim.asList(SimpleGrantedAuthority.class);
+//        return jwt.getClaim("role").asList(String.class).stream()
+//                .map(SimpleGrantedAuthority::new)
+//                .collect(Collectors.toList());
+        Claim roleClaim = jwt.getClaim("role");
 
-        return jwt.getClaim("roles").asList(String.class).stream()
+        if (roleClaim == null) {
+            throw new IllegalArgumentException("Claim 'role' is missing in the token");
+        }
+
+        List<String> roles = roleClaim.asList(String.class);
+
+        if (roles == null) {
+            throw new IllegalArgumentException("Claim 'role' is not a list of strings");
+        }
+
+        return roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

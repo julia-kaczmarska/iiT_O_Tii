@@ -6,6 +6,7 @@ import back.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("#userId == authentication.principal.userId")
 @CrossOrigin(origins = "http://localhost:3000") // Pozwala na żądania z frontu
 public class CategoryController {
 

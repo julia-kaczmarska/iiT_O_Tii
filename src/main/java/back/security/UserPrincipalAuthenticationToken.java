@@ -18,6 +18,6 @@ public class UserPrincipalAuthenticationToken extends AbstractAuthenticationToke
 
     @Override
     public Object getCredentials() {
-        return null; // JWT nie przechowuje hasła
+        return null;
     }
 }

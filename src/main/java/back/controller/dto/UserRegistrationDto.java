@@ -14,5 +14,5 @@ public class UserRegistrationDto {
     private String lastname;
     private String email;
     private String password;
-//    private final List<String> roles;
+    private final List<String> role;
 }

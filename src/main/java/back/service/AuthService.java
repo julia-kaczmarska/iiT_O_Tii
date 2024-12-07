@@ -39,11 +39,11 @@ public class AuthService {
 
         var principal = (UserPrincipal) authentication.getPrincipal();
 
-        var roles = principal.getAuthorities().stream()
+        var role = principal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        var token = jwtIssuer.issue(principal.getUserId(), principal.getEmail(), principal.getName(), roles.toString());
+        var token = jwtIssuer.issue(principal.getUserId(), principal.getEmail(), principal.getName(), role);
         return Token
                 .accessToken(token)
                 .build();

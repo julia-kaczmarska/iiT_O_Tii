@@ -6,12 +6,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("#userId == authentication.principal.userId")
 @CrossOrigin(origins = "http://localhost:3000")
 public class CashflowRecordController {
 
@@ -38,6 +40,7 @@ public class CashflowRecordController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
     @PutMapping("/user/{userId}/records/{recordId}")
     public ResponseEntity<CashflowRecordDTO> updateCashflowRecord(
             @PathVariable Long userId,
