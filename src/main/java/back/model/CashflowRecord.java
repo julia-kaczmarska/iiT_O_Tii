@@ -24,7 +24,7 @@ public class CashflowRecord {
     private LocalDate startDate;
 
     @Column(name = "record_type", nullable = false)
-    private boolean recordType;
+    private Boolean recordType;
 
     @Column(name = "description", nullable = false)
     private String desc;

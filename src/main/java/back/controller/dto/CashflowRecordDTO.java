@@ -1,10 +1,10 @@
 package back.controller.dto;
 
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -24,6 +24,19 @@ public class CashflowRecordDTO {
 
     private Long categoryId;
     private Long userId;
+
+
+    @Override
+    public String toString() {
+        return "CashflowRecordDTO{" +
+                "recordType=" + recordType +
+                ", startDate=" + startDate +
+                ", amount=" + amount +
+                ", description='" + desc + '\'' +
+                ", categoryId=" + categoryId +
+                '}';
+    }
+
 
     // Domyślny konstruktor potrzebny dla Jacksona
     public CashflowRecordDTO() {

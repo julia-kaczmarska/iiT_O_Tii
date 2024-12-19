@@ -49,6 +49,8 @@ public class CashflowRecordService {
                     .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + cashflowRecordDTO.getCategoryId()));
         }
 
+//        System.out.println(cashflowRecordDTO);
+
         CashflowRecord cashflowRecord = new CashflowRecord();
         cashflowRecord.setAmount(cashflowRecordDTO.getAmount());
         cashflowRecord.setStartDate(cashflowRecordDTO.getStartDate());
@@ -58,7 +60,8 @@ public class CashflowRecordService {
         cashflowRecord.setUser(user);
         CashflowRecord savedCashflowRecord = cashflowRecordRepository.save(cashflowRecord);
 
-        return new CashflowRecordDTO(savedCashflowRecord.getAmount(), savedCashflowRecord.getStartDate(), savedCashflowRecord.isRecordType(), savedCashflowRecord.getDesc(),
+
+        return new CashflowRecordDTO(savedCashflowRecord.getAmount(), savedCashflowRecord.getStartDate(), savedCashflowRecord.getRecordType(), savedCashflowRecord.getDesc(),
                 savedCashflowRecord.getCategory() != null ? savedCashflowRecord.getCategory().getCategoryId() : null, userId);
     }
 
@@ -95,7 +98,7 @@ public class CashflowRecordService {
         return new CashflowRecordDTO(
                 updatedRecord.getAmount(),
                 updatedRecord.getStartDate(),
-                updatedRecord.isRecordType(),
+                updatedRecord.getRecordType(),
                 updatedRecord.getDesc(),
                 updatedRecord.getCategory() != null ? updatedRecord.getCategory().getCategoryId() : null,
                 userId

@@ -2,7 +2,6 @@ package back.controller;
 
 import back.controller.dto.CashflowRecordDTO;
 import back.service.CashflowRecordService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,9 @@ public class CashflowRecordController {
     }
 
     @PostMapping("/user/{userId}/addrecords")
-    public ResponseEntity<Object> addCashflowRecord(@Valid @RequestBody CashflowRecordDTO cashflowRecordDTO, @PathVariable Long userId) {
+    public ResponseEntity<Object> addCashflowRecord(@RequestBody CashflowRecordDTO cashflowRecordDTO, @PathVariable Long userId) {
+        System.out.println(cashflowRecordDTO);
+
         try{
             CashflowRecordDTO savedCashflowRecord = cashflowRecordService.addCashflowRecord(cashflowRecordDTO, userId);
 
