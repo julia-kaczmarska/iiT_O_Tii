@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface CashflowRecordRepository extends JpaRepository<CashflowRecord, Long> {
 
     // GET records
-    @Query("SELECT new back.controller.dto.CashflowRecordDTO(r.amount, r.startDate, r.recordType, r.desc, c.categoryId, u.userId) " +
+    @Query("SELECT new back.controller.dto.CashflowRecordDTO(r.cashflowRecordId, r.amount, r.startDate, r.recordType, r.desc, c.categoryId, u.userId) " +
             "FROM CashflowRecord r " +
             "JOIN r.category c " +
             "JOIN r.user u " +

@@ -61,7 +61,7 @@ public class CashflowRecordService {
         CashflowRecord savedCashflowRecord = cashflowRecordRepository.save(cashflowRecord);
 
 
-        return new CashflowRecordDTO(savedCashflowRecord.getAmount(), savedCashflowRecord.getStartDate(), savedCashflowRecord.getRecordType(), savedCashflowRecord.getDesc(),
+        return new CashflowRecordDTO(savedCashflowRecord.getCashflowRecordId(), savedCashflowRecord.getAmount(), savedCashflowRecord.getStartDate(), savedCashflowRecord.getRecordType(), savedCashflowRecord.getDesc(),
                 savedCashflowRecord.getCategory() != null ? savedCashflowRecord.getCategory().getCategoryId() : null, userId);
     }
 
@@ -89,6 +89,7 @@ public class CashflowRecordService {
         existingRecord.setAmount(newRecordData.getAmount());
         existingRecord.setStartDate(newRecordData.getStartDate());
         existingRecord.setRecordType(newRecordData.getRecordType());
+        existingRecord.setDesc(newRecordData.getDesc());
         existingRecord.setCategory(category);
         CashflowRecord updatedRecord = cashflowRecordRepository.save(existingRecord);
 
@@ -96,6 +97,7 @@ public class CashflowRecordService {
 //                .orElseThrow(() -> new IllegalArgumentException("No sharing record found for cashflow record id: " + updatedRecord.getCashflowRecordId()));
 
         return new CashflowRecordDTO(
+                updatedRecord.getCashflowRecordId(),
                 updatedRecord.getAmount(),
                 updatedRecord.getStartDate(),
                 updatedRecord.getRecordType(),
