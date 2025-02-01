@@ -20,9 +20,7 @@ public class CashflowRecordDTO {
     @NotNull(message = "Start date cannot be null")
     private LocalDate startDate;
 
-    @NotNull(message = "Record type cannot be null")
     private Boolean recordType;
-    @NotNull(message = "Record description cannot be null")
     private String desc;
 
     private Long categoryId;
