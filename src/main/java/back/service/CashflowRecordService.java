@@ -257,11 +257,26 @@ public class CashflowRecordService {
             existingRecord.setStartDate(newRecordDTO.getStartDate());
             existingRecord.setDesc(newRecordDTO.getDesc());
 
-            if (!existingRecord.getCategory().getCategoryId().equals(newRecordDTO.getCategoryId())) {
-                Category newCategory = categoryRepository.findById(newRecordDTO.getCategoryId())
-                        .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + newRecordDTO.getCategoryId()));
-                existingRecord.setCategory(newCategory);
+//            if (!existingRecord.getCategory().getCategoryId().equals(newRecordDTO.getCategoryId())) {
+//                Category newCategory = categoryRepository.findById(newRecordDTO.getCategoryId())
+//                        .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + newRecordDTO.getCategoryId()));
+//                existingRecord.setCategory(newCategory);
+//            }
+
+            if (existingRecord.getCategory() == null ||
+                    !existingRecord.getCategory().getCategoryId().equals(newRecordDTO.getCategoryId())) {
+
+                // Jeśli nowa kategoria jest nieprawidłowa (null), usuń kategorię z rekordu
+                if (newRecordDTO.getCategoryId() == null) {
+                    existingRecord.setCategory(null);
+                } else {
+                    // Znajdź nową kategorię i ustaw ją
+                    Category newCategory = categoryRepository.findById(newRecordDTO.getCategoryId())
+                            .orElseThrow(() -> new IllegalArgumentException("Category not found with id: " + newRecordDTO.getCategoryId()));
+                    existingRecord.setCategory(newCategory);
+                }
             }
+
 
             cashflowRecordRepository.save(existingRecord);
 
