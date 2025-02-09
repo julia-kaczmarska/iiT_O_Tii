@@ -14,6 +14,10 @@ import java.util.Optional;
 public interface MonthBudgetRepository extends JpaRepository<MonthBudget, Long> {
     @Query("SELECT mb FROM MonthBudget mb WHERE mb.user = :user AND mb.firstOfMonth = :date")
     Optional<MonthBudget> findByUserAndDate(@Param("user") User user, @Param("date") LocalDate date);
+
+    @Query("SELECT mb FROM MonthBudget mb WHERE mb.user.userId = :userId AND FUNCTION('MONTH', mb.firstOfMonth) = :month AND FUNCTION('YEAR', mb.firstOfMonth) = :year")
+    Optional<MonthBudget> findByUserIdAndMonth(@Param("userId") Long userId, @Param("month") int month, @Param("year") int year);
+
 }
 
 

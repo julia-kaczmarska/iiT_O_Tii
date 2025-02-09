@@ -1,6 +1,8 @@
 package back.controller;
 
 import back.controller.dto.MonthBudgetDTO;
+import back.repository.CashflowRecordRepository;
+import back.repository.MonthBudgetRepository;
 import back.service.MonthBudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,12 +19,36 @@ import java.time.LocalDate;
 @CrossOrigin(origins = "http://localhost:3000")
 public class MonthBudgetController {
     private final MonthBudgetService monthBudgetService;
+    private final CashflowRecordRepository cashflowRecordRepository;
+    private final MonthBudgetRepository monthBudgetRepository;
 
     @GetMapping("/user/{userId}/getBudget/{date}")
     public ResponseEntity<MonthBudgetDTO> getBudget(@PathVariable Long userId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         MonthBudgetDTO budget = monthBudgetService.getBudgetByDate(userId, date);
         return ResponseEntity.ok(budget);
     }
+
+//    @GetMapping("/user/{userId}/plannedBudgets")
+//    public ResponseEntity<List<PlannedBudgetDTO>> getPlannedBudgets(
+//            @PathVariable Long userId,
+//            @RequestParam String date) {
+//        LocalDate firstOfMonth = LocalDate.parse(date);
+//
+//        // Pobierz MonthBudget na podstawie daty i użytkownika
+//        MonthBudget monthBudget = monthBudgetRepository.findByUserAndFirstOfMonth(userId, firstOfMonth)
+//                .orElseThrow(() -> new IllegalArgumentException("No budget found for the given month."));
+//
+//        // Zwracamy zaplanowane budżety
+//        List<PlannedBudgetDTO> plannedBudgets = monthBudget.getPlannedBudgets().stream().map(pb -> new PlannedBudgetDTO(
+//                pb.getPlannedBudgetId(),
+//                pb.getCategory().getCategoryId(),
+//                pb.getPlannedAmount(),
+//                pb.getSpentAmount()
+//        )).collect(Collectors.toList());
+//
+//        return ResponseEntity.ok(plannedBudgets);
+//    }
+
 
 
     @PostMapping("/user/{userId}/createBudget")

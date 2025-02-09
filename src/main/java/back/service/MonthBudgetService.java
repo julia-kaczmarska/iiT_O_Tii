@@ -5,6 +5,8 @@ import back.controller.dto.PlannedBudgetDTO;
 import back.model.MonthBudget;
 import back.model.PlannedBudget;
 import back.model.User;
+import back.model.CashflowRecord;
+import back.repository.CashflowRecordRepository;
 import back.repository.CategoryRepository;
 import back.repository.MonthBudgetRepository;
 import back.repository.UserRepository;
@@ -22,6 +24,7 @@ public class MonthBudgetService {
     private final MonthBudgetRepository monthBudgetRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final CashflowRecordRepository cashflowRecordRepository;
 
     public MonthBudgetDTO getBudgetByDate(Long userId, LocalDate date) {
         User user = userRepository.findById(Math.toIntExact(userId))
@@ -40,8 +43,30 @@ public class MonthBudgetService {
         MonthBudget monthBudget = new MonthBudget();
         monthBudget.setUser(user);
         monthBudget.setFirstOfMonth(dto.getFirstOfMonth());
-        monthBudget.setTotalIncome(dto.getTotalIncome());
-        monthBudget.setRemainingBalance(dto.getRemainingBalance());
+
+        // Obliczenie sumy przychodów dla tego miesiąca
+        double totalIncome = cashflowRecordRepository.findAllByUserIdAndRecordTypeAndMonthAndYear(
+                        userId,
+                        false, // recordType dla przychodów
+                        dto.getFirstOfMonth().getMonthValue(),
+                        dto.getFirstOfMonth().getYear()
+                ).stream()
+                .mapToDouble(CashflowRecord::getAmount)
+                .sum();
+
+        monthBudget.setTotalIncome(totalIncome);
+
+        // Pozostały budżet = dochody - wszystkie wydatki
+        double spentAmountTotal = cashflowRecordRepository.findAllByUserIdAndRecordTypeAndMonthAndYear(
+                        userId,
+                        true, // recordType dla wydatków
+                        dto.getFirstOfMonth().getMonthValue(),
+                        dto.getFirstOfMonth().getYear()
+                ).stream()
+                .mapToDouble(CashflowRecord::getAmount)
+                .sum();
+
+        monthBudget.setRemainingBalance(totalIncome - spentAmountTotal);
 
         List<PlannedBudget> plannedBudgets = dto.getPlannedBudgets().stream().map(pbDto -> {
             PlannedBudget plannedBudget = new PlannedBudget();
@@ -49,7 +74,19 @@ public class MonthBudgetService {
             plannedBudget.setCategory(categoryRepository.findById(pbDto.getCategoryId())
                     .orElseThrow(() -> new IllegalArgumentException("Category not found")));
             plannedBudget.setPlannedAmount(pbDto.getPlannedAmount());
-            plannedBudget.setSpentAmount(pbDto.getSpentAmount());
+
+            // Obliczenie sumy wydatków (spentAmount) dla kategorii
+            double spentAmount = cashflowRecordRepository.findAllByUserIdAndRecordTypeAndCategoryAndMonthAndYear(
+                            userId,
+                            true, // recordType dla wydatków
+                            pbDto.getCategoryId(),
+                            dto.getFirstOfMonth().getMonthValue(),
+                            dto.getFirstOfMonth().getYear()
+                    ).stream()
+                    .mapToDouble(CashflowRecord::getAmount)
+                    .sum();
+
+            plannedBudget.setSpentAmount(spentAmount);
             return plannedBudget;
         }).collect(Collectors.toList());
 
@@ -59,6 +96,8 @@ public class MonthBudgetService {
         return mapToDTO(savedBudget);
     }
 
+
+
     @Transactional
     public MonthBudgetDTO editBudgetByDate(Long userId, LocalDate date, MonthBudgetDTO dto) {
         User user = userRepository.findById(Math.toIntExact(userId))
@@ -67,9 +106,29 @@ public class MonthBudgetService {
         MonthBudget monthBudget = monthBudgetRepository.findByUserAndDate(user, date)
                 .orElseThrow(() -> new IllegalArgumentException("No budget found for the given date"));
 
-        // Aktualizacja pól budżetu miesięcznego
-        monthBudget.setTotalIncome(dto.getTotalIncome());
-        monthBudget.setRemainingBalance(dto.getRemainingBalance());
+        // Przeliczenie totalIncome na podstawie rekordów typu 0
+        double totalIncome = cashflowRecordRepository.findAllByUserIdAndRecordTypeAndMonthAndYear(
+                        userId,
+                        false, // recordType dla przychodów
+                        date.getMonthValue(),
+                        date.getYear()
+                ).stream()
+                .mapToDouble(CashflowRecord::getAmount)
+                .sum();
+
+        monthBudget.setTotalIncome(totalIncome);
+
+        // Przeliczenie remainingBalance na podstawie dochodów i wydatków
+        double spentAmountTotal = cashflowRecordRepository.findAllByUserIdAndRecordTypeAndMonthAndYear(
+                        userId,
+                        true, // recordType dla wydatków
+                        date.getMonthValue(),
+                        date.getYear()
+                ).stream()
+                .mapToDouble(CashflowRecord::getAmount)
+                .sum();
+
+        monthBudget.setRemainingBalance(totalIncome - spentAmountTotal);
 
         // Aktualizacja lub dodanie planów budżetowych dla kategorii
         List<PlannedBudget> updatedPlannedBudgets = dto.getPlannedBudgets().stream().map(pbDto -> {
@@ -82,7 +141,19 @@ public class MonthBudgetService {
             plannedBudget.setCategory(categoryRepository.findById(pbDto.getCategoryId())
                     .orElseThrow(() -> new IllegalArgumentException("Category not found")));
             plannedBudget.setPlannedAmount(pbDto.getPlannedAmount());
-            plannedBudget.setSpentAmount(pbDto.getSpentAmount());
+
+            // Przeliczenie wydatków (spentAmount) dla danej kategorii
+            double spentAmount = cashflowRecordRepository.findAllByUserIdAndRecordTypeAndCategoryAndMonthAndYear(
+                            userId,
+                            true, // recordType dla wydatków
+                            pbDto.getCategoryId(),
+                            date.getMonthValue(),
+                            date.getYear()
+                    ).stream()
+                    .mapToDouble(CashflowRecord::getAmount)
+                    .sum();
+
+            plannedBudget.setSpentAmount(spentAmount);
             return plannedBudget;
         }).collect(Collectors.toList());
 

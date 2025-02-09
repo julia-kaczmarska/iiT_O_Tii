@@ -15,4 +15,15 @@ public class PlannedBudgetDTO {
     private double plannedAmount;
     @NotNull(message = "spentAmount cannot be null")
     private double spentAmount;
+
+    public PlannedBudgetDTO(Long plannedBudgetId, Long categoryId, double plannedAmount, double spentAmount) {
+        this.plannedBudgetId = plannedBudgetId;
+        this.categoryId = categoryId;
+        this.plannedAmount = plannedAmount;
+        this.spentAmount = spentAmount;
+    }
+
+    public PlannedBudgetDTO() {
+
+    }
 }

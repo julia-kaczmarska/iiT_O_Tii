@@ -20,11 +20,11 @@ public class PlannedBudget {
     @Column(name = "spent_amount", nullable = false)
     private double spentAmount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "month_budget_id", nullable = false)
     private MonthBudget monthBudget;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -18,44 +19,66 @@ public class CashflowRecordController {
 
     private final CashflowRecordService cashflowRecordService;
 
-    @GetMapping("/user/{userId}/records")
-    public ResponseEntity<Object> getRecordsByUserId(@PathVariable Long userId) {
+    @GetMapping("/user/{userId}/expenses")
+    public ResponseEntity<Object> getExpensesByMonth(
+            @PathVariable Long userId,
+            @RequestParam("monthStartDate") String monthStartDate) {
         try {
-            List<CashflowRecordDTO> cashflowRecords = cashflowRecordService.getCashflowRecordsByUserId(userId);
-            return new ResponseEntity<>(cashflowRecords, HttpStatus.OK);
+            LocalDate startDate = LocalDate.parse(monthStartDate);
+            List<CashflowRecordDTO> expenses = cashflowRecordService.getCashflowRecordsByTypeAndMonth(userId, true, startDate);
+            return new ResponseEntity<>(expenses, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @PostMapping("/user/{userId}/addrecords")
-    public ResponseEntity<Object> addCashflowRecord(@RequestBody CashflowRecordDTO cashflowRecordDTO, @PathVariable Long userId) {
-        System.out.println(cashflowRecordDTO);
-
-        try{
-            CashflowRecordDTO savedCashflowRecord = cashflowRecordService.addCashflowRecord(cashflowRecordDTO, userId);
-
-
-            return new ResponseEntity<>(savedCashflowRecord, HttpStatus.CREATED);
+    @GetMapping("/user/{userId}/incomes")
+    public ResponseEntity<Object> getIncomesByMonth(
+            @PathVariable Long userId,
+            @RequestParam("monthStartDate") String monthStartDate) {
+        try {
+            LocalDate startDate = LocalDate.parse(monthStartDate);
+            List<CashflowRecordDTO> incomes = cashflowRecordService.getCashflowRecordsByTypeAndMonth(userId, false, startDate);
+            return new ResponseEntity<>(incomes, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @PutMapping("/user/{userId}/records/{recordId}")
-    public ResponseEntity<CashflowRecordDTO> updateCashflowRecord(
-            @PathVariable Long userId,
-            @PathVariable Long recordId,
-            @RequestBody CashflowRecordDTO cashflowRecordDTO) {
-        CashflowRecordDTO updatedRecord = cashflowRecordService.updateCashflowRecord(userId, recordId, cashflowRecordDTO);
-        return new ResponseEntity<>(updatedRecord, HttpStatus.OK);
+    @PostMapping("/user/{userId}/addIncomes")
+    public ResponseEntity<Object> addIncomes(@RequestBody List<CashflowRecordDTO> cashflowRecordDTOs, @PathVariable Long userId) {
+        try {
+            List<CashflowRecordDTO> savedRecords = cashflowRecordService.addIncomes(cashflowRecordDTOs, userId);
+            return new ResponseEntity<>(savedRecords, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
-    @DeleteMapping("/user/{userId}/records/{recordId}")
-    public ResponseEntity<Void> deleteCashflowRecord(
+    @PostMapping("/user/{userId}/addExpense")
+    public ResponseEntity<Object> addExpenses(@RequestBody List<CashflowRecordDTO> cashflowRecordDTOs, @PathVariable Long userId) {
+        try {
+            List<CashflowRecordDTO> savedRecords = cashflowRecordService.addExpense(cashflowRecordDTOs, userId);
+            return new ResponseEntity<>(savedRecords, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/user/{userId}/editRecords")
+    public ResponseEntity<List<CashflowRecordDTO>> updateMultipleCashflowRecords(
             @PathVariable Long userId,
-            @PathVariable Long recordId) {
-        cashflowRecordService.deleteCashflowRecord(userId, recordId);
+            @RequestBody List<CashflowRecordDTO> cashflowRecordDTOs) {
+        List<CashflowRecordDTO> updatedRecords = cashflowRecordService.updateMultipleCashflowRecords(userId, cashflowRecordDTOs);
+        return new ResponseEntity<>(updatedRecords, HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/user/{userId}/records")
+    public ResponseEntity<Void> deleteMultipleCashflowRecords(
+            @PathVariable Long userId,
+            @RequestBody List<Long> recordIds) {
+        cashflowRecordService.deleteMultipleCashflowRecords(userId, recordIds);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
