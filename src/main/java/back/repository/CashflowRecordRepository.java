@@ -61,6 +61,11 @@ public interface CashflowRecordRepository extends JpaRepository<CashflowRecord, 
     @Query("SELECT cr FROM CashflowRecord cr WHERE cr.user.userId = :userId AND cr.cashflowRecordId IN :recordIds")
     List<CashflowRecord> findAllByUserIdAndRecordIds(@Param("userId") Long userId, @Param("recordIds") List<Long> recordIds);
 
+    @Query("SELECT SUM(c.amount) FROM CashflowRecord c WHERE c.user.userId = :userId AND c.recordType = :recordType AND " +
+            "YEAR(c.startDate) = YEAR(:monthStartDate) AND MONTH(c.startDate) = MONTH(:monthStartDate)")
+    Optional<Double> getTotalAmountByUserAndTypeAndMonth(@Param("userId") Long userId,
+                                                         @Param("recordType") boolean recordType,
+                                                         @Param("monthStartDate") LocalDate monthStartDate);
 
 
 }

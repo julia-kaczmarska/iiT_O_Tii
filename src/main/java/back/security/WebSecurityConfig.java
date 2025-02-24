@@ -1,5 +1,10 @@
 package back.security;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,8 +76,10 @@ public class WebSecurityConfig {
             .and()
             .formLogin().disable() // Wyłącz logowanie
             .authorizeHttpRequests(registry -> registry
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs", "/user/**").permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Pozwól na wszystkie zapytania OPTIONS (preflight)
                     .requestMatchers("/auth/**").permitAll() // Zezwól na dostęp do endpointów autoryzacji
+                    .requestMatchers("/**").permitAll()
                     .anyRequest().authenticated() // Wymagaj autoryzacji dla pozostałych żądań
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -90,5 +97,16 @@ public class WebSecurityConfig {
                 .userDetailsService(customUserDetailService)
                 .passwordEncoder(passwordEncoder())
                 .and().build();
+    }
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .components(new Components().addSecuritySchemes("Token",
+                        new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
+                                .in(SecurityScheme.In.HEADER).name("Authorization")))
+                .info(new Info().title("DayByDay API").version("0.1"))
+                .addSecurityItem(
+                        new SecurityRequirement().addList("Token", Arrays.asList("read", "write")));
     }
 }

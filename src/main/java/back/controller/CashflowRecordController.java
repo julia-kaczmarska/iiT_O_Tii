@@ -45,6 +45,7 @@ public class CashflowRecordController {
         }
     }
 
+
     @PostMapping("/user/{userId}/addIncomes")
     public ResponseEntity<Object> addIncomes(@RequestBody List<CashflowRecordDTO> cashflowRecordDTOs, @PathVariable Long userId) {
         try {

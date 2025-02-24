@@ -1,7 +1,6 @@
 security:
   jwt:
     secret-key: kochammackastickyplackaicalamojarodzinkeee
-
 spring:
   application:
     name: Mocha Money
@@ -15,3 +14,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
+
+springdoc:
+  swagger-ui:
+    config-url: /v3/api-docs
+    query-config-enabled: true
